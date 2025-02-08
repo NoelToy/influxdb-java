@@ -275,11 +275,25 @@ public interface InfluxDB extends AutoCloseable {
   public Pong ping();
 
   /**
+   * Ping this influxDB.
+   *
+   * @return the list of response of the ping execution.
+   */
+  public List<Pong> pings();
+
+  /**
    * Return the version of the connected influxDB Server.
    *
    * @return the version String, otherwise unknown.
    */
   public String version();
+
+  /**
+   * Return the version of the connected influxDB Server.
+   *
+   * @return the list of version String, otherwise unknown.
+   */
+  public List<String> versions();
 
   /**
    * Write a single Point to the default database.
@@ -458,6 +472,15 @@ public interface InfluxDB extends AutoCloseable {
   /**
    * Execute a query against a database.
    *
+   * @param query
+   *            the query to execute.
+   * @return a List of QueryResults which contain list of Series which matched the query.
+   */
+  public List<QueryResult> queries(final Query query);
+
+  /**
+   * Execute a query against a database.
+   *
    * One of the consumers will be executed.
    *
    * @param query
@@ -547,6 +570,16 @@ public interface InfluxDB extends AutoCloseable {
    * @return a List of Series which matched the query.
    */
   public QueryResult query(final Query query, TimeUnit timeUnit);
+
+  /**
+   * Execute a query against a database.
+   *
+   * @param query
+   *            the query to execute.
+   * @param timeUnit the time unit of the results.
+   * @return a List of QueryResult which contains Series which matched the query.
+   */
+  public List<QueryResult> queries(final Query query, TimeUnit timeUnit);
 
   /**
    * Create a new Database.

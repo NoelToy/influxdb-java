@@ -4,8 +4,11 @@ import org.influxdb.InfluxDB.ResponseFormat;
 import org.influxdb.impl.InfluxDBImpl;
 
 import okhttp3.OkHttpClient;
+import org.influxdb.impl.InfluxDBParallelImpl;
 import org.influxdb.impl.Preconditions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -104,5 +107,30 @@ public enum InfluxDBFactory {
     Preconditions.checkNonEmptyString(username, "username");
     Objects.requireNonNull(client, "client");
     return new InfluxDBImpl(url, username, password, client, responseFormat);
+  }
+  /**
+   * Create parallel connections to a InfluxDB.
+   *
+   * @param urls
+   *            the list of urls to connect to.
+   * @param usernames
+   *            the list of usernames which is used to authorize against each influxDB instance.
+   * @param passwords
+   *            the list of passwords for the username which is used to authorize against each influxDB
+   *            instance.
+   * @return a InfluxDB adapter suitable to access a InfluxDB.
+   */
+  public static InfluxDB connect(final List<String> urls, final List<String> usernames, final List<String> passwords,final List<String> databases) {
+    List<InfluxDB> influxDBConnections = new ArrayList<>();
+    for(String url : urls){
+      Preconditions.checkNonEmptyString(url, "url");
+    }
+    for(String username : usernames){
+      Preconditions.checkNonEmptyString(username, "username");
+    }
+    for (int i = 0; i < urls.size(); i++) {
+      influxDBConnections.add(new InfluxDBImpl(urls.get(i), usernames.get(i), passwords.get(i),new OkHttpClient.Builder()));
+    }
+    return new InfluxDBParallelImpl(influxDBConnections,databases);
   }
 }

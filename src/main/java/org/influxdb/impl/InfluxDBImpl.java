@@ -407,11 +407,21 @@ public class InfluxDBImpl implements InfluxDB {
   }
 
   @Override
+  public List<Pong> pings() {
+    return Collections.singletonList(ping());
+  }
+
+  @Override
   public String version() {
     if (version == null) {
       this.version = ping().getVersion();
     }
     return this.version;
+  }
+
+  @Override
+  public List<String> versions() {
+    return Collections.singletonList(version());
   }
 
   @Override
@@ -557,6 +567,11 @@ public class InfluxDBImpl implements InfluxDB {
   @Override
   public QueryResult query(final Query query) {
     return executeQuery(callQuery(query));
+  }
+
+  @Override
+  public List<QueryResult> queries(Query query) {
+    return Collections.singletonList(executeQuery(callQuery(query)));
   }
 
   /**
@@ -731,6 +746,11 @@ public class InfluxDBImpl implements InfluxDB {
         }
     }
     return executeQuery(call);
+  }
+
+  @Override
+  public List<QueryResult> queries(Query query, TimeUnit timeUnit) {
+    return Collections.singletonList(query(query,timeUnit));
   }
 
   /**

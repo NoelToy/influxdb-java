@@ -567,6 +567,10 @@ public class Point {
     return sb.toString();
   }
 
+  public String getMeasurement(){
+    return this.measurement;
+  }
+
   private void concatenatedTags(final StringBuilder sb) {
     for (Entry<String, String> tag : this.tags.entrySet()) {
       sb.append(',');
